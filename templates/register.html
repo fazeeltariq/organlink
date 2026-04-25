@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Register — OrganLink · Join Life-Saving Network</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #eef2ff 0%, #ffffff 40%, #eef2ff 100%);
+            background-attachment: fixed;
+        }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes subtlePulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.7; }
+        }
+        .card-animation {
+            animation: fadeSlideUp 0.55s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+        }
+        .input-focus-ring:focus {
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+            border-color: #3b82f6;
+            outline: none;
+        }
+        .form-transition {
+            transition: all 0.25s ease;
+        }
+        .role-card {
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            cursor: pointer;
+        }
+        .role-card.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        }
+        .role-card:hover:not(.selected) {
+            border-color: #cbd5e1;
+            background-color: #f8fafc;
+            transform: translateY(-2px);
+        }
+        .bg-blob {
+            background: radial-gradient(circle, rgba(59,130,246,0.06) 0%, rgba(59,130,246,0) 70%);
+        }
+        .bg-blob-2 {
+            background: radial-gradient(circle, rgba(99,102,241,0.05) 0%, rgba(99,102,241,0) 70%);
+        }
+        .required-star::after {
+            content: '*';
+            color: #ef4444;
+            margin-left: 2px;
+        }
+        select, input, textarea {
+            transition: all 0.2s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-8 md:py-12 px-4 relative">
+
+    <!-- Background decorative elements - matching front page style -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-blob rounded-full blur-3xl"></div>
+        <div class="absolute bottom-20 -right-20 w-80 h-80 bg-blob-2 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/3 left-1/2 transform -translate-x-1/2 w-64 h-64 bg-indigo-100/20 rounded-full blur-2xl"></div>
+    </div>
+
+    <div class="max-w-2xl mx-auto relative z-10">
+        <!-- Main Card -->
+        <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-white/60 card-animation">
+            <!-- Header Gradient -->
+            <div class="relative px-6 py-7 text-center bg-gradient-to-br from-blue-700 via-indigo-700 to-indigo-800">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff22_1px,transparent_1px)] [background-size:20px_20px]"></div>
+                <div class="relative">
+                    <div class="inline-flex items-center justify-center w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl shadow-md mb-3 ring-1 ring-white/30">
+                        <span class="text-white text-2xl font-bold tracking-tight">OL</span>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-white tracking-tight">Create account</h1>
+                    <p class="text-blue-100 text-sm md:text-base mt-1">Join the OrganLink life-saving network</p>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="p-6 md:p-8">
+                <!-- Flash Messages -->
+                <div id="flash-messages-container" class="mb-5 space-y-2">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="p-3 rounded-xl text-sm font-medium flex items-start gap-2 border-l-4 {% if category == 'error' %}bg-red-50 text-red-700 border-red-500{% else %}bg-emerald-50 text-emerald-700 border-emerald-500{% endif %} shadow-sm">
+                                    <span class="text-base mt-0.5">{% if category == 'error' %}⚠{% else %}✓{% endif %}</span>
+                                    <span>{{ message }}</span>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+                <form method="POST" id="registerForm" class="space-y-5">
+                    <!-- Role Selection - Modern card style instead of dropdown -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 text-sm font-semibold tracking-wide">I want to register as</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="role-card rounded-xl border-2 border-gray-200 p-3 text-center transition-all" data-role="donor">
+                                <div class="text-blue-600 mb-1 flex justify-center">
+                                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                                    </svg>
+                                </div>
+                                <div class="font-semibold text-gray-800 text-sm">Donor</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Save lives</div>
+                            </div>
+                            <div class="role-card rounded-xl border-2 border-gray-200 p-3 text-center transition-all" data-role="hospital">
+                                <div class="text-indigo-600 mb-1 flex justify-center">
+                                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
+                                    </svg>
+                                </div>
+                                <div class="font-semibold text-gray-800 text-sm">Hospital</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Register patients</div>
+                            </div>
+                            <div class="role-card rounded-xl border-2 border-gray-200 p-3 text-center transition-all" data-role="admin">
+                                <div class="text-purple-600 mb-1 flex justify-center">
+                                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                                    </svg>
+                                </div>
+                                <div class="font-semibold text-gray-800 text-sm">Admin</div>
+                                <div class="text-xs text-gray-500 mt-0.5">System oversight</div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="role" id="selectedRole" value="">
+                    </div>
+
+                    <!-- Common Fields -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="block text-gray-700 text-sm font-semibold tracking-wide required-star">Full Name</label>
+                            <input type="text" name="name" required 
+                                   class="w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white transition-all input-focus-ring text-gray-800"
+                                   placeholder="John Doe">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-gray-700 text-sm font-semibold tracking-wide required-star">Email</label>
+                            <input type="email" name="email" required 
+                                   class="w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white transition-all input-focus-ring text-gray-800"
+                                   placeholder="john@hospital.org">
+                        </div>
+                        <div class="md:col-span-2 space-y-1.5">
+                            <label class="block text-gray-700 text-sm font-semibold tracking-wide required-star">Password</label>
+                            <input type="password" name="password" required 
+                                   class="w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white transition-all input-focus-ring text-gray-800"
+                                   placeholder="Create a strong password (min. 8 characters)">
+                            <p class="text-xs text-gray-400 mt-1">Use at least 8 characters with letters and numbers</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Donor Fields -->
+                    <div id="donorFields" class="hidden space-y-4 border-t border-gray-100 pt-4 mt-2 form-transition">
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-5 bg-blue-500 rounded-full"></div>
+                            <h3 class="font-bold text-gray-800">Donor medical details</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="block text-gray-700 text-sm font-semibold tracking-wide">Blood Group</label>
+                                <select name="bloodgroup" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50 focus:border-blue-300 transition">
+                                    <option value="A+">A Positive (A+)</option>
+                                    <option value="A-">A Negative (A-)</option>
+                                    <option value="B+">B Positive (B+)</option>
+                                    <option value="B-">B Negative (B-)</option>
+                                    <option value="AB+">AB Positive (AB+)</option>
+                                    <option value="AB-">AB Negative (AB-)</option>
+                                    <option value="O+">O Positive (O+)</option>
+                                    <option value="O-">O Negative (O-)</option>
+                                </select>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="block text-gray-700 text-sm font-semibold tracking-wide">Organ to donate</label>
+                                <select name="organ_donated" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50 focus:border-blue-300 transition">
+                                    <option value="Kidney">Kidney</option>
+                                    <option value="Liver">Liver</option>
+                                    <option value="Heart">Heart</option>
+                                    <option value="Lungs">Lungs</option>
+                                    <option value="Pancreas">Pancreas</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50/70 rounded-xl p-3 text-sm text-blue-800 border border-blue-100">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                <span>Your donation will be verified by a hospital partner before matching begins. Thank you for your generosity.</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Hospital Fields -->
+                    <div id="hospitalFields" class="hidden space-y-4 border-t border-gray-100 pt-4 mt-2 form-transition">
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-5 bg-indigo-500 rounded-full"></div>
+                            <h3 class="font-bold text-gray-800">Hospital credentials</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="space-y-1.5">
+                                <label class="block text-gray-700 text-sm font-semibold tracking-wide">Hospital name</label>
+                                <input type="text" name="hospital_name" 
+                                       class="w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white transition-all input-focus-ring"
+                                       placeholder="City General Hospital">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="block text-gray-700 text-sm font-semibold tracking-wide">Full address</label>
+                                <textarea name="address" rows="2" 
+                                          class="w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white transition-all input-focus-ring resize-none"
+                                          placeholder="Street, city, state, postal code"></textarea>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="block text-gray-700 text-sm font-semibold tracking-wide">Contact number</label>
+                                <input type="tel" name="contact" 
+                                       class="w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white transition-all input-focus-ring"
+                                       placeholder="+1 (555) 000-0000">
+                            </div>
+                        </div>
+                        <div class="bg-amber-50/70 rounded-xl p-3 text-sm text-amber-800 border border-amber-100">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                <span>Hospital registration requires admin approval. You'll receive email notification once verified (typically within 24-48 hours).</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Admin Fields -->
+                    <div id="adminFields" class="hidden space-y-4 border-t border-gray-100 pt-4 mt-2 form-transition">
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-5 bg-purple-500 rounded-full"></div>
+                            <h3 class="font-bold text-gray-800">Admin verification</h3>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-gray-700 text-sm font-semibold tracking-wide">Admin secret code</label>
+                            <input type="password" name="admin_secret" 
+                                   class="w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white transition-all input-focus-ring"
+                                   placeholder="Enter system administrator code">
+                            <p class="text-xs text-gray-400 mt-1">Contact the system administrator to obtain the secure registration code.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" 
+                            class="w-full mt-4 bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2.5 rounded-xl font-bold text-base shadow-md hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus:ring-4 focus:ring-blue-300/50">
+                        Create account →
+                    </button>
+                </form>
+                
+                <!-- Login Link -->
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600 text-sm">Already have an account? 
+                        <a href="/login" class="text-blue-700 hover:text-indigo-800 font-semibold hover:underline underline-offset-2 transition">Sign in →</a>
+                    </p>
+                </div>
+
+                <!-- Trust badge -->
+                <div class="mt-6 pt-4 border-t border-gray-100 text-center">
+                    <div class="inline-flex items-center gap-2 text-xs text-gray-400">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                        <span>HIPAA compliant • Data encrypted</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Role selection - card style with reactive fields
+        let currentRole = '';
+
+        function updateRoleFields(role) {
+            currentRole = role;
+            document.getElementById('selectedRole').value = role;
+            
+            // Hide all role-specific sections
+            document.getElementById('donorFields').classList.add('hidden');
+            document.getElementById('hospitalFields').classList.add('hidden');
+            document.getElementById('adminFields').classList.add('hidden');
+            
+            // Show selected section and update required attributes
+            const donorInputs = document.querySelectorAll('#donorFields input, #donorFields select');
+            const hospitalInputs = document.querySelectorAll('#hospitalFields input, #hospitalFields textarea');
+            const adminInputs = document.querySelectorAll('#adminFields input');
+            
+            // Reset required flags
+            donorInputs.forEach(i => i.required = false);
+            hospitalInputs.forEach(i => i.required = false);
+            adminInputs.forEach(i => i.required = false);
+            
+            if (role === 'donor') {
+                document.getElementById('donorFields').classList.remove('hidden');
+                donorInputs.forEach(i => i.required = true);
+            } else if (role === 'hospital') {
+                document.getElementById('hospitalFields').classList.remove('hidden');
+                hospitalInputs.forEach(i => i.required = true);
+            } else if (role === 'admin') {
+                document.getElementById('adminFields').classList.remove('hidden');
+                adminInputs.forEach(i => i.required = true);
+            }
+        }
+
+        // Setup role card click handlers
+        const roleCards = document.querySelectorAll('.role-card');
+        roleCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const role = card.getAttribute('data-role');
+                
+                // Update UI selection
+                roleCards.forEach(c => c.classList.remove('selected', 'border-blue-500', 'bg-blue-50'));
+                card.classList.add('selected', 'border-blue-500', 'bg-blue-50');
+                
+                updateRoleFields(role);
+            });
+        });
+
+        // Flash messages auto-dismiss
+        const flashMessages = document.querySelectorAll('#flash-messages-container > div');
+        if(flashMessages.length) {
+            flashMessages.forEach(msg => {
+                setTimeout(() => {
+                    msg.style.transition = 'opacity 0.4s ease';
+                    msg.style.opacity = '0';
+                    setTimeout(() => msg.remove(), 400);
+                }, 4000);
+            });
+        }
+
+        // Password strength indicator (subtle)
+        const pwdInput = document.querySelector('input[name="password"]');
+        if(pwdInput) {
+            pwdInput.addEventListener('input', function() {
+                const val = this.value;
+                const strengthEl = this.parentElement?.querySelector('.strength-indicator');
+                if(strengthEl) strengthEl.remove();
+                const hint = document.createElement('div');
+                hint.className = 'strength-indicator text-xs mt-1 transition';
+                if(val.length === 0) {
+                    // nothing
+                } else if(val.length < 6) {
+                    hint.className += ' text-red-400';
+                    hint.innerText = 'Weak — add more characters';
+                } else if(val.length < 8) {
+                    hint.className += ' text-yellow-500';
+                    hint.innerText = 'Medium — add numbers or symbols';
+                } else {
+                    hint.className += ' text-emerald-500';
+                    hint.innerText = 'Strong password';
+                }
+                if(val.length > 0 && !this.parentElement?.querySelector('.strength-indicator')) {
+                    this.parentElement?.appendChild(hint);
+                } else if(this.parentElement?.querySelector('.strength-indicator') && val.length === 0) {
+                    this.parentElement.querySelector('.strength-indicator')?.remove();
+                } else if(this.parentElement?.querySelector('.strength-indicator')) {
+                    this.parentElement.querySelector('.strength-indicator').replaceWith(hint);
+                }
+            });
+        }
+
+        // Form submit handler to prevent double submission
+        const form = document.getElementById('registerForm');
+        if(form) {
+            form.addEventListener('submit', function(e) {
+                if(!document.getElementById('selectedRole').value) {
+                    e.preventDefault();
+                    const warning = document.createElement('div');
+                    warning.className = 'mb-4 p-3 rounded-xl text-sm font-medium bg-amber-50 text-amber-700 border-l-4 border-amber-500';
+                    warning.innerText = 'Please select a registration role (Donor, Hospital, or Admin)';
+                    const container = document.getElementById('flash-messages-container');
+                    container.prepend(warning);
+                    setTimeout(() => warning.remove(), 3000);
+                    return false;
+                }
+                const btn = this.querySelector('button[type="submit"]');
+                if(btn) {
+                    btn.disabled = true;
+                    btn.innerText = 'Creating account ...';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

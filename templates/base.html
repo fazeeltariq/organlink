@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OrganLink - {% block title %}Life Saving Transplants{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .section { transition: all 0.3s ease; }
+        .nav-active { background-color: #2563eb; color: white; }
+        .card-hover:hover { transform: translateY(-5px); transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Top Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Updated Logo - No emoji, professional gradient -->
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-md">
+                        <span class="text-white text-sm font-bold">OL</span>
+                    </div>
+                    <span class="text-2xl font-extrabold bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent tracking-tight">OrganLink</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-600">Welcome, {{ session.user_name }}</span>
+                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">{{ session.role|upper }}</span>
+                    <a href="/logout" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div id="flash-messages" class="fixed top-20 right-4 z-50">
+                {% for category, message in messages %}
+                    <div class="mb-2 p-4 rounded-lg shadow-lg {% if category == 'error' %}bg-red-500 text-white{% else %}bg-green-500 text-white{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+            <script>
+                setTimeout(() => {
+                    const flash = document.getElementById('flash-messages');
+                    if (flash) flash.style.display = 'none';
+                }, 3000);
+            </script>
+        {% endif %}
+    {% endwith %}
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            // Show selected section
+            document.getElementById(sectionId + '-section').style.display = 'block';
+            
+            // Update active button style
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            event.currentTarget.classList.remove('bg-gray-200', 'text-gray-700');
+            event.currentTarget.classList.add('bg-blue-600', 'text-white');
+        }
+    </script>
+</body>
+</html>

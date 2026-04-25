@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Sign In — OrganLink · Life-Saving Network</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for improved elegance -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        /* Matching gradient from front page - subtle and professional */
+        body {
+            background: linear-gradient(135deg, #eef2ff 0%, #ffffff 40%, #eef2ff 100%);
+            background-attachment: fixed;
+        }
+        
+        /* Subtle animated grain/depth - very light, adds premium feel */
+        @keyframes subtleFloat {
+            0% { transform: translate(0px, 0px); }
+            50% { transform: translate(-10px, -10px); }
+            100% { transform: translate(0px, 0px); }
+        }
+        
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card-animation {
+            animation: fadeSlideUp 0.55s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+        }
+        
+        .input-focus-ring:focus {
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+            border-color: #3b82f6;
+            outline: none;
+        }
+        
+        /* Soft, matching background pattern (very subtle) */
+        .auth-bg-pattern {
+            background-image: radial-gradient(circle at 20% 30%, rgba(37, 99, 235, 0.02) 1.5px, transparent 1.5px);
+            background-size: 32px 32px;
+        }
+        
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.12);
+        }
+        
+        /* Matching decorative blobs with front page colors */
+        .bg-blob-1 {
+            background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0) 70%);
+        }
+        .bg-blob-2 {
+            background: radial-gradient(circle, rgba(99,102,241,0.06) 0%, rgba(99,102,241,0) 70%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-5 auth-bg-pattern relative">
+
+    <!-- Matching background decorative elements (soft, adds depth without distraction) -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-blob-1 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-20 -right-20 w-80 h-80 bg-blob-2 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/3 left-1/2 transform -translate-x-1/2 w-64 h-64 bg-indigo-100/15 rounded-full blur-2xl"></div>
+    </div>
+
+    <div class="relative w-full max-w-md">
+        <!-- Main Card - matching glass style from front page -->
+        <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-white/60 card-animation transition-all duration-300 hover:shadow-2xl">
+            <!-- Header Gradient Section - matches front page gradient -->
+            <div class="relative px-7 pt-8 pb-7 text-center bg-gradient-to-br from-blue-700 via-indigo-700 to-indigo-800">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff22_1px,transparent_1px)] [background-size:20px_20px]"></div>
+                <div class="relative z-2">
+                    <!-- Brand mark -->
+                    <div class="inline-flex items-center justify-center w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl shadow-md mb-4 ring-1 ring-white/30">
+                        <span class="text-white text-2xl font-bold tracking-tight">OL</span>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-white tracking-tight">Welcome back</h1>
+                    <p class="text-blue-100 text-sm md:text-base mt-1 font-medium">Sign in to access your OrganLink dashboard</p>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="p-6 md:p-8">
+                <!-- Flash Messages Container -->
+                <div id="flash-messages-container" class="mb-5 space-y-2">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="p-3 rounded-xl text-sm font-medium flex items-start gap-2 border-l-4 {% if category == 'error' %}bg-red-50 text-red-700 border-red-500{% else %}bg-emerald-50 text-emerald-700 border-emerald-500{% endif %} shadow-sm">
+                                    <span class="text-base mt-0.5">
+                                        {% if category == 'error' %}⚠{% else %}✓{% endif %}
+                                    </span>
+                                    <span>{{ message }}</span>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+                <form method="POST" class="space-y-5" id="loginForm">
+                    <!-- Email field -->
+                    <div class="space-y-1.5">
+                        <label class="block text-gray-700 text-sm font-semibold tracking-wide">Email Address</label>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.7">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                </svg>
+                            </div>
+                            <input type="email" name="email" required 
+                                   class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white transition-all duration-200 input-focus-ring text-gray-800 placeholder:text-gray-400"
+                                   placeholder="doctor@hospital.org / admin@organlink.com">
+                        </div>
+                    </div>
+
+                    <!-- Password field -->
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-baseline">
+                            <label class="block text-gray-700 text-sm font-semibold tracking-wide">Password</label>
+                            <a href="#" class="text-xs text-blue-600 hover:text-blue-800 font-medium transition">Forgot password?</a>
+                        </div>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.7">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                </svg>
+                            </div>
+                            <input type="password" name="password" required 
+                                   class="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white transition-all duration-200 input-focus-ring text-gray-800"
+                                   placeholder="••••••••">
+                        </div>
+                    </div>
+
+                    <!-- Submit Button - matches front page CTA -->
+                    <button type="submit" 
+                            class="w-full mt-2 bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-2.5 rounded-xl font-bold text-base shadow-md hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus:ring-4 focus:ring-blue-300/50">
+                        Sign in →
+                    </button>
+                </form>
+
+                <!-- Registration link -->
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600 text-sm">Don't have an account? 
+                        <a href="/register" class="text-blue-700 hover:text-indigo-800 font-semibold hover:underline underline-offset-2 transition">Create an account</a>
+                    </p>
+                </div>
+
+                <!-- Demo credentials panel - clean and consistent -->
+                <div class="mt-7 pt-5 border-t border-gray-100">
+                    <div class="text-center mb-2">
+                        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider bg-gray-50 px-3 py-1 rounded-full">Test Environment</span>
+                    </div>
+                    <div class="flex flex-col gap-2 text-xs text-gray-500 bg-gray-50/70 rounded-xl p-3">
+                        <div class="flex items-center justify-between flex-wrap gap-2">
+                            <div class="flex items-center gap-1"><span class="font-mono font-bold text-gray-700">Admin:</span> <span class="text-gray-600">admin@organlink.com</span></div>
+                            <code class="bg-white px-2 py-0.5 rounded border border-gray-200 text-gray-600">password123</code>
+                        </div>
+                        <div class="flex items-center justify-between flex-wrap gap-2">
+                            <div class="flex items-center gap-1"><span class="font-mono font-bold text-gray-700">Hospital:</span> <span class="text-gray-600">hospital@city.com</span></div>
+                            <code class="bg-white px-2 py-0.5 rounded border border-gray-200 text-gray-600">password123</code>
+                        </div>
+                    </div>
+                    <p class="text-center text-[11px] text-gray-400 mt-3">Secure login • Encrypted connection</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- footer link -->
+        <div class="text-center mt-6 text-gray-500 text-xs">
+            <a href="/" class="hover:text-blue-700 transition flex items-center justify-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                Back to OrganLink
+            </a>
+        </div>
+    </div>
+
+    <!-- JavaScript for enhanced UX -->
+    <script>
+        (function() {
+            // Auto-dismiss flash messages
+            const flashMessages = document.querySelectorAll('#flash-messages-container > div');
+            if(flashMessages.length) {
+                flashMessages.forEach(msg => {
+                    setTimeout(() => {
+                        msg.style.transition = 'opacity 0.4s ease';
+                        msg.style.opacity = '0';
+                        setTimeout(() => msg.remove(), 400);
+                    }, 3800);
+                });
+            }
+
+            // Password visibility toggle
+            const passwordInput = document.querySelector('input[name="password"]');
+            if(passwordInput) {
+                const wrapper = passwordInput.closest('.relative');
+                if(wrapper && !wrapper.querySelector('.toggle-pwd')) {
+                    const toggleBtn = document.createElement('button');
+                    toggleBtn.type = 'button';
+                    toggleBtn.className = 'toggle-pwd absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition';
+                    toggleBtn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>`;
+                    wrapper.appendChild(toggleBtn);
+                    let showPassword = false;
+                    toggleBtn.addEventListener('click', () => {
+                        showPassword = !showPassword;
+                        passwordInput.type = showPassword ? 'text' : 'password';
+                        toggleBtn.innerHTML = showPassword ? 
+                            `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>` :
+                            `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>`;
+                    });
+                }
+            }
+
+            // Click to copy demo credentials
+            const demoRows = document.querySelectorAll('.bg-gray-50\\/70 .flex');
+            demoRows.forEach(row => {
+                row.style.cursor = 'pointer';
+                row.addEventListener('click', (e) => {
+                    const emailSpan = row.querySelector('.text-gray-600');
+                    if(emailSpan && emailSpan.innerText.includes('@')) {
+                        const email = emailSpan.innerText.trim();
+                        navigator.clipboard?.writeText(email).then(() => {
+                            const toast = document.createElement('div');
+                            toast.innerText = `Copied: ${email}`;
+                            toast.className = 'fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-3 py-1.5 rounded-full shadow-lg z-50';
+                            document.body.appendChild(toast);
+                            setTimeout(() => toast.remove(), 1500);
+                        }).catch(() => {});
+                    }
+                });
+            });
+
+            // Form submit handler
+            const form = document.getElementById('loginForm');
+            if(form) {
+                form.addEventListener('submit', function(e) {
+                    const btn = this.querySelector('button[type="submit"]');
+                    if(btn) {
+                        btn.disabled = true;
+                        btn.innerText = 'Signing in ...';
+                    }
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

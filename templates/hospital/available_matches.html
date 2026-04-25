@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}Available Matches | OrganLink{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+    
+    <!-- Back Button -->
+    <div class="mb-6">
+        <a href="/hospital/dashboard" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition group">
+            <svg class="w-4 h-4 group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            Back to Dashboard
+        </a>
+    </div>
+    
+    <!-- Patient Info Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8 hover:shadow-md transition">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">Patient Details</h2>
+            </div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+                Matching in Progress
+            </span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-5">
+            <div>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Full Name</p>
+                <p class="font-bold text-gray-800 text-lg mt-1">{{ patient.name }}</p>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Blood Group</p>
+                <p class="font-bold text-2xl text-gray-800 mt-1">{{ patient.bloodgroup }}</p>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Organ Needed</p>
+                <p class="font-bold text-gray-800 text-lg mt-1">{{ patient.organ_needed }}</p>
+            </div>
+            <div>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Urgency Level</p>
+                <span class="inline-flex px-3 py-1 rounded-full text-sm font-bold mt-1 
+                    {% if patient.urgency == 'critical' %}bg-red-100 text-red-700
+                    {% elif patient.urgency == 'high' %}bg-orange-100 text-orange-700
+                    {% elif patient.urgency == 'medium' %}bg-yellow-100 text-yellow-700
+                    {% else %}bg-emerald-100 text-emerald-700{% endif %}">
+                    {{ patient.urgency|upper }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compatible Organs Section Header -->
+    <div class="flex items-center gap-3 mb-5">
+        <div class="w-1 h-6 bg-emerald-500 rounded-full"></div>
+        <h3 class="text-xl md:text-2xl font-bold text-gray-800">Compatible Organs Available</h3>
+        <span class="px-2 py-0.5 text-xs font-bold bg-emerald-100 text-emerald-700 rounded-full">{{ organs|length if organs else 0 }}</span>
+    </div>
+    
+    {% if organs %}
+        <div class="space-y-4">
+            {% for organ in organs %}
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-5">
+                    <!-- Organ Info -->
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 rounded-xl 
+                                {% if organ.organ_type == 'Kidney' %}bg-red-100
+                                {% elif organ.organ_type == 'Liver' %}bg-amber-100
+                                {% elif organ.organ_type == 'Heart' %}bg-rose-100
+                                {% elif organ.organ_type == 'Lungs' %}bg-sky-100
+                                {% else %}bg-purple-100{% endif %} flex items-center justify-center">
+                                <svg class="w-6 h-6 
+                                    {% if organ.organ_type == 'Kidney' %}text-red-600
+                                    {% elif organ.organ_type == 'Liver' %}text-amber-600
+                                    {% elif organ.organ_type == 'Heart' %}text-rose-600
+                                    {% elif organ.organ_type == 'Lungs' %}text-sky-600
+                                    {% else %}text-purple-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-800">{{ organ.organ_type }}</h4>
+                                <p class="text-sm text-gray-500">Donor: <span class="font-medium text-gray-700">{{ organ.donor_name }}</span></p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-500">Blood Group:</span>
+                                <span class="font-bold text-gray-800 ml-2">{{ organ.bloodgroup }}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Status:</span>
+                                <span class="inline-flex items-center gap-1 text-emerald-600 font-semibold ml-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    {{ organ.status|upper }}
+                                </span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Added:</span>
+                                <span class="text-gray-700 ml-2">
+                                    {% if organ.added_on %}
+                                        {% if organ.added_on is string %}
+                                            {{ organ.added_on[:10] }}
+                                        {% else %}
+                                            {{ organ.added_on.strftime('%Y-%m-%d') }}
+                                        {% endif %}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Assign Button -->
+                    <form method="POST" action="/hospital/assign_organ" onsubmit="return confirm('WARNING: This action will assign this organ to the patient. This action is irreversible and will save a life. Continue?');">
+                        <input type="hidden" name="organ_id" value="{{ organ.organ_id }}">
+                        <input type="hidden" name="patient_id" value="{{ patient.patient_id }}">
+                        <button type="submit" 
+                                class="w-full lg:w-auto px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            Assign Organ
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State - No Compatible Organs -->
+        <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border-2 border-amber-200 p-8 md:p-12 text-center">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-100 mb-4">
+                <svg class="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h3 class="text-xl md:text-2xl font-bold text-amber-800 mb-3">No Compatible Organs Found</h3>
+            <p class="text-gray-600 max-w-md mx-auto mb-6">There are currently no available organs matching this patient's blood group and organ type.</p>
+            
+            <div class="bg-white rounded-xl p-5 text-left max-w-lg mx-auto border border-amber-100">
+                <div class="flex items-center gap-2 mb-3">
+                    <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                    <p class="font-semibold text-gray-800">Suggestions:</p>
+                </div>
+                <ul class="space-y-2 text-gray-600">
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                        <span>Check if any donors need health status verification</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                        <span>Register new donors with compatible blood groups</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                        <span>Check back later when new organs become available</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                        <span>Consider expanding donor search to other hospitals</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="mt-6">
+                <a href="/hospital/dashboard" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-600 text-white rounded-xl font-medium hover:bg-gray-700 transition">
+                    Return to Dashboard
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    // Add any interactive enhancements
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const btn = this.querySelector('button[type="submit"]');
+            if(btn && confirm('WARNING: This action will assign this organ to the patient. This action is irreversible and will save a life. Continue?')) {
+                btn.disabled = true;
+                btn.innerHTML = '<svg class=\"w-4 h-4 animate-spin inline mr-2\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15\" /></svg>Processing...';
+            } else if(!confirm) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}

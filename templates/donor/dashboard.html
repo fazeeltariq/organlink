@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block title %}Donor Dashboard | OrganLink{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+    
+    <!-- Welcome Header -->
+    <div class="mb-8">
+        <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-white rounded-2xl p-6 md:p-8 shadow-sm border border-emerald-100">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-800 tracking-tight">Welcome back, <span class="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">{{ session.user_name }}</span></h1>
+                    <p class="text-gray-500 mt-1 text-sm md:text-base">Donor dashboard · Track your lifesaving contributions</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="bg-white rounded-xl px-4 py-2 shadow-sm border border-gray-100">
+                        <span class="text-xs text-gray-500 uppercase tracking-wide">Donor ID</span>
+                        <p class="text-sm font-mono font-semibold text-gray-700">{{ donor.id if donor else 'N/A' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if donor %}
+    <div class="grid lg:grid-cols-3 gap-6">
+        
+        <!-- Main Information Card -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Donor Information Section -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300">
+                <div class="border-b border-gray-100 bg-gray-50/40 px-6 py-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-1 h-6 bg-emerald-500 rounded-full"></div>
+                        <h2 class="text-xl font-bold text-gray-800">Donor Information</h2>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Blood Group</label>
+                                <p class="text-lg font-bold text-gray-800 mt-1">{{ donor.bloodgroup }}</p>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Health Status</label>
+                                <div class="mt-1">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold 
+                                        {% if donor.health_status == 'healthy' %}bg-emerald-100 text-emerald-800
+                                        {% elif donor.health_status == 'under_review' %}bg-amber-100 text-amber-800
+                                        {% else %}bg-red-100 text-red-800{% endif %}">
+                                        <span class="w-1.5 h-1.5 rounded-full mr-2 
+                                            {% if donor.health_status == 'healthy' %}bg-emerald-600
+                                            {% elif donor.health_status == 'under_review' %}bg-amber-600
+                                            {% else %}bg-red-600{% endif %}"></span>
+                                        {{ donor.health_status|replace('_', ' ')|title }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Associated Hospital</label>
+                                <p class="text-md font-medium text-gray-700 mt-1 flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                                    {{ donor.hospital_name or 'Not yet assigned' }}
+                                </p>
+                            </div>
+                            <div>
+                                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Registration Date</label>
+                                <p class="text-md font-medium text-gray-700 mt-1">{{ donor.registered_date if donor.registered_date else 'Recently registered' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Donated Organs Section -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="border-b border-gray-100 bg-gray-50/40 px-6 py-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-1 h-6 bg-teal-500 rounded-full"></div>
+                        <h2 class="text-xl font-bold text-gray-800">Your Donated Organs</h2>
+                        <span class="ml-2 px-2 py-0.5 text-xs font-semibold bg-teal-100 text-teal-700 rounded-full">{{ organs|length if organs else 0 }}</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    {% if organs %}
+                        <div class="space-y-3">
+                            {% for organ in organs %}
+                            <div class="border border-gray-100 rounded-xl p-4 hover:shadow-md transition-all duration-200 hover:-translate-y-0.5">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-xl 
+                                            {% if organ.status == 'available' %}bg-emerald-100
+                                            {% elif organ.status == 'matched' %}bg-blue-100
+                                            {% else %}bg-gray-100{% endif %} flex items-center justify-center">
+                                            <svg class="w-5 h-5 
+                                                {% if organ.status == 'available' %}text-emerald-600
+                                                {% elif organ.status == 'matched' %}text-blue-600
+                                                {% else %}text-gray-600{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4.5 12.75l6 6 9-13.5" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-gray-800">{{ organ.organ_type }}</p>
+                                            <p class="text-xs text-gray-400">Registered: {{ organ.registered_date if organ.registered_date else 'Recently' }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold 
+                                            {% if organ.status == 'available' %}bg-emerald-100 text-emerald-700
+                                            {% elif organ.status == 'matched' %}bg-blue-100 text-blue-700
+                                            {% else %}bg-gray-100 text-gray-700{% endif %}">
+                                            <span class="w-1.5 h-1.5 rounded-full mr-1.5 
+                                                {% if organ.status == 'available' %}bg-emerald-500
+                                                {% elif organ.status == 'matched' %}bg-blue-500
+                                                {% else %}bg-gray-500{% endif %}"></span>
+                                            {{ organ.status|upper }}
+                                        </span>
+                                        {% if organ.status == 'matched' %}
+                                            <span class="text-xs text-emerald-600 font-medium flex items-center gap-1">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                                                Donated to save a life
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-8">
+                            <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gray-100 mb-3">
+                                <svg class="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375 7.444 2.25 12 2.25s8.25 1.847 8.25 4.125zm0 0v6.75m-16.5-6.75v6.75m16.5 3.375c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg>
+                            </div>
+                            <p class="text-gray-500">No organs registered yet</p>
+                            <p class="text-xs text-gray-400 mt-1">Please contact your hospital to register organs</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="space-y-6">
+            <!-- Impact Card -->
+            {% if matches %}
+            <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 shadow-sm border border-emerald-200">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center shadow-md">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-emerald-800">Your Donation Impact</h3>
+                </div>
+                <div class="space-y-3">
+                    {% for match in matches %}
+                    <div class="bg-white/80 rounded-xl p-3 border border-emerald-100">
+                        <p class="text-sm font-medium text-gray-800">Your <span class="font-bold text-emerald-700">{{ match.organ_type }}</span> donation</p>
+                        <p class="text-xs text-gray-500 mt-1">Helped a patient in need on {{ match.match_date.strftime('%B %d, %Y') if match.match_date else 'recently' }}</p>
+                        <div class="mt-2 pt-2 border-t border-emerald-100">
+                            <p class="text-xs text-emerald-600 font-medium flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                                Thank you for your generosity!
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Quick Stats Card -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-center gap-2 mb-4">
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                    <h3 class="font-bold text-gray-800">Your Impact Stats</h3>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center pb-2 border-b border-gray-100">
+                        <span class="text-sm text-gray-600">Organs donated</span>
+                        <span class="text-lg font-bold text-emerald-600">{{ organs|length if organs else 0 }}</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-2 border-b border-gray-100">
+                        <span class="text-sm text-gray-600">Lives impacted</span>
+                        <span class="text-lg font-bold text-blue-600">{{ matches|length if matches else 0 }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Donor status</span>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
+                            Active
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Helpful Information Card -->
+            <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100">
+                <h3 class="font-semibold text-gray-800 text-sm mb-3 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Donor Information
+                </h3>
+                <ul class="space-y-2 text-sm text-gray-600">
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                        <span>Regular health checkups help maintain donor eligibility</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                        <span>Organs are matched based on urgency and compatibility</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                        <span>Your generous donation saves multiple lives</span>
+                    </li>
+                </ul>
+                <div class="mt-4 pt-3 border-t border-gray-200">
+                    <a href="/contact-support" class="text-xs text-emerald-600 hover:text-emerald-700 font-medium flex items-center gap-1">
+                        Need assistance? Contact support
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty / No Profile State -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-100 mb-4">
+            <svg class="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+        </div>
+        <h2 class="text-xl font-bold text-gray-800 mb-2">Donor Profile Not Found</h2>
+        <p class="text-gray-500 max-w-md mx-auto">Please contact your hospital to complete your donor registration and profile setup.</p>
+        <div class="mt-6">
+            <a href="/contact" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition">
+                Contact Hospital
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Add smooth hover animations
+    document.querySelectorAll('.hover\\:shadow-md').forEach(el => {
+        el.classList.add('transition-all', 'duration-300');
+    });
+</script>
+{% endblock %}

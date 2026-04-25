@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>OrganLink | Life-Saving Transplants · Intelligent Organ Allocation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom config for better shadows & transitions -->
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(35px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes subtlePulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.2); }
+            70% { box-shadow: 0 0 0 12px rgba(37, 99, 235, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+            opacity: 0;
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.35s; }
+        .delay-4 { animation-delay: 0.5s; }
+        .stat-card {
+            transition: all 0.25s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.12);
+        }
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 25px -10px rgba(0, 0, 0, 0.1);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(2px);
+        }
+        .feature-icon {
+            transition: all 0.2s ease;
+        }
+        .group:hover .feature-icon {
+            transform: scale(1.08);
+            color: #1e3a8a;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: system-ui, -apple-system, 'Inter', 'Segoe UI', Roboto, Helvetica, sans-serif;
+        }
+        /* custom focus ring */
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 8px;
+        }
+        /* smooth scroll offset for anchor */
+        .scroll-mt-20 {
+            scroll-margin-top: 5rem;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-white to-indigo-50/40 antialiased">
+
+    <!-- Navigation - Sticky, responsive with backdrop blur -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-200/60 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
+            <div class="flex justify-between items-center h-16 md:h-20">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-md">
+                        <span class="text-white text-sm font-bold">OL</span>
+                    </div>
+                    <span class="text-2xl font-extrabold bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent tracking-tight">OrganLink</span>
+                    <span class="hidden sm:inline-block text-[11px] font-semibold bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full ml-1">v2.0</span>
+                </div>
+                <div class="flex items-center gap-3 md:gap-5">
+                    <a href="/login" class="px-4 py-2 md:px-5 md:py-2.5 text-blue-700 font-semibold text-sm md:text-base hover:bg-blue-50 rounded-xl transition-all duration-200">Login</a>
+                    <a href="/register" class="px-4 py-2 md:px-6 md:py-2.5 bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-sm md:text-base font-semibold rounded-xl shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:translate-y-0">Register →</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Dynamic and fully responsive -->
+    <header class="text-center py-16 sm:py-20 md:py-28 px-5 relative overflow-hidden">
+        <!-- subtle background decorative shapes -->
+        <div class="absolute top-0 left-0 w-80 h-80 bg-blue-100/40 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-indigo-100/30 rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
+        
+        <div class="max-w-5xl mx-auto fade-in-up relative z-2">
+            <div class="inline-flex items-center gap-2 px-5 py-1.5 bg-blue-50/80 backdrop-blur-sm text-blue-800 rounded-full text-sm font-semibold border border-blue-200/60 mb-6 shadow-sm">
+                <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                <span>Connecting life to life — ethical & transparent</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
+                Every Organ Counts.
+                <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-800 bg-clip-text text-transparent block mt-2">Every Life Matters.</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+                A transparent, database-driven platform ensuring fair organ allocation based on medical urgency, biological compatibility, and real-time coordination.
+            </p>
+            <div class="flex flex-wrap gap-4 justify-center">
+                <a href="/register" class="px-7 py-3.5 md:px-9 md:py-4 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 active:translate-y-0 text-base md:text-lg">Start Saving Lives</a>
+                <a href="#how-it-works" class="px-7 py-3.5 md:px-9 md:py-4 border-2 border-blue-600 text-blue-700 rounded-xl font-semibold hover:bg-blue-50 transition-all hover:-translate-y-0.5 text-base md:text-lg backdrop-blur-sm">How It Works</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Statistics Section - Dynamic numbers with elegant cards -->
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-10 md:py-14">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            <!-- stat 1 -->
+            <div class="bg-white rounded-2xl shadow-md p-6 text-center stat-card fade-in-up delay-1 border border-gray-100/80">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-red-50 text-red-600 mb-4">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <div class="text-4xl md:text-5xl font-black text-gray-800 mb-1 tracking-tight">{{ waiting_patients | default('1,284') }}</div>
+                <div class="text-gray-700 font-semibold text-base">Patients Waiting</div>
+                <div class="text-xs text-gray-400 mt-2">urgent transplant list</div>
+            </div>
+            <!-- stat 2 -->
+            <div class="bg-white rounded-2xl shadow-md p-6 text-center stat-card fade-in-up delay-2 border border-gray-100/80">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 mb-4">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                </div>
+                <div class="text-4xl md:text-5xl font-black text-gray-800 mb-1 tracking-tight">{{ total_donors | default('9,526') }}</div>
+                <div class="text-gray-700 font-semibold text-base">Registered Donors</div>
+                <div class="text-xs text-gray-400 mt-2">heroes giving hope</div>
+            </div>
+            <!-- stat 3 -->
+            <div class="bg-white rounded-2xl shadow-md p-6 text-center stat-card fade-in-up delay-3 border border-gray-100/80">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 mb-4">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <div class="text-4xl md:text-5xl font-black text-gray-800 mb-1 tracking-tight">{{ successful_matches | default('347') }}</div>
+                <div class="text-gray-700 font-semibold text-base">Successful Matches</div>
+                <div class="text-xs text-gray-400 mt-2">lives transformed</div>
+            </div>
+            <!-- stat 4 -->
+            <div class="bg-white rounded-2xl shadow-md p-6 text-center stat-card fade-in-up delay-4 border border-gray-100/80">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 mb-4">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+                </div>
+                <div class="text-4xl md:text-5xl font-black text-gray-800 mb-1 tracking-tight">{{ available_organs | default('189') }}</div>
+                <div class="text-gray-700 font-semibold text-base">Available Organs</div>
+                <div class="text-xs text-gray-400 mt-2">ready for matching</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section (3-step flow) -->
+    <div id="how-it-works" class="bg-white/90 py-20 md:py-28 scroll-mt-20">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="text-blue-600 font-semibold text-sm tracking-wide uppercase bg-blue-50 px-4 py-1.5 rounded-full">Process</span>
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mt-4 mb-4">How OrganLink Works</h2>
+                <p class="text-gray-600 text-lg">Simple, transparent, and life-saving — from registration to transplant coordination</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+                <!-- Step 1 -->
+                <div class="text-center group">
+                    <div class="relative mx-auto w-28 h-28 mb-6">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl rotate-6 group-hover:rotate-12 transition-transform duration-300"></div>
+                        <div class="relative w-28 h-28 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg flex items-center justify-center text-white text-3xl font-black">
+                            1
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Register Patient & Donor</h3>
+                    <p class="text-gray-600 leading-relaxed">Hospitals securely register patients and living/deceased donors with complete medical history, blood type, and urgency level.</p>
+                </div>
+                <!-- Step 2 -->
+                <div class="text-center group">
+                    <div class="relative mx-auto w-28 h-28 mb-6">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl rotate-6 group-hover:rotate-12 transition-transform duration-300"></div>
+                        <div class="relative w-28 h-28 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg flex items-center justify-center text-white text-3xl font-black">
+                            2
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Intelligent Matching</h3>
+                    <p class="text-gray-600 leading-relaxed">Our algorithm finds compatible donor-recipient pairs based on blood group, tissue typing, urgency score, and geographic proximity.</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="text-center group">
+                    <div class="relative mx-auto w-28 h-28 mb-6">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl rotate-6 group-hover:rotate-12 transition-transform duration-300"></div>
+                        <div class="relative w-28 h-28 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg flex items-center justify-center text-white text-3xl font-black">
+                            3
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Transplant & Save Lives</h3>
+                    <p class="text-gray-600 leading-relaxed">Hospital approves the match, schedules transplant procedure, and gives a second chance at life — full audit trail maintained.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section - Gradient cards without emojis, modern icons -->
+    <div class="py-20 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Why Choose OrganLink?</h2>
+                <p class="text-gray-600 text-lg">Trusted by leading transplant centers worldwide</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-7 lg:gap-9">
+                <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 flex items-start space-x-5 group border border-gray-100">
+                    <div class="feature-icon text-blue-600 shrink-0 bg-blue-50 p-3 rounded-xl group-hover:bg-blue-100 transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl text-gray-800 mb-1">Secure & Immutable Logs</h3>
+                        <p class="text-gray-600">ACID-compliant transactions and SHA-256 audit trail prevent double-booking and ensure full regulatory transparency.</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 flex items-start space-x-5 group border border-gray-100">
+                    <div class="feature-icon text-indigo-600 shrink-0 bg-indigo-50 p-3 rounded-xl group-hover:bg-indigo-100 transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl text-gray-800 mb-1">Real-time Urgency Matching</h3>
+                        <p class="text-gray-600">Dynamic organ allocation based on MELD/PELD scores, blood type compatibility, and waiting time optimization.</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 flex items-start space-x-5 group border border-gray-100">
+                    <div class="feature-icon text-emerald-600 shrink-0 bg-emerald-50 p-3 rounded-xl group-hover:bg-emerald-100 transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl text-gray-800 mb-1">Full Audit & Compliance</h3>
+                        <p class="text-gray-600">Time-stamped logs for every match, decision, and transplant — ready for UNOS / regulatory inspection.</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all duration-300 flex items-start space-x-5 group border border-gray-100">
+                    <div class="feature-icon text-purple-600 shrink-0 bg-purple-50 p-3 rounded-xl group-hover:bg-purple-100 transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.048.58.024 1.193-.14 1.743" /></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl text-gray-800 mb-1">Multi-Hospital Network</h3>
+                        <p class="text-gray-600">Seamless coordination across transplant centers, real-time organ offers, and unified waiting list management.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section - Modern gradient, fully responsive -->
+    <div class="py-20 md:py-24">
+        <div class="max-w-5xl mx-auto px-5">
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 via-indigo-700 to-indigo-800 shadow-2xl">
+                <!-- subtle pattern overlay -->
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff33_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <div class="relative p-8 md:p-14 text-center">
+                    <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">Ready to Save Lives?</h2>
+                    <p class="text-blue-100 text-lg md:text-xl mb-8 max-w-2xl mx-auto">Join the nation's most trusted organ transplant network today.</p>
+                    <div class="flex flex-wrap gap-5 justify-center">
+                        <a href="/register" class="px-8 py-3.5 bg-white text-indigo-700 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 text-base md:text-lg">Register as Donor</a>
+                        <a href="/login" class="px-8 py-3.5 border-2 border-white text-white rounded-xl font-semibold hover:bg-white hover:text-indigo-700 transition-all backdrop-blur-sm">Hospital Login →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Clean typography, no emojis -->
+    <footer class="bg-gray-900 text-white py-10">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-800 pb-6 mb-6">
+                <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <span class="text-white text-xs font-bold">OL</span>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight text-white">OrganLink</span>
+                </div>
+                <div class="flex flex-wrap gap-6 text-gray-300 text-sm">
+                    <a href="#" class="hover:text-white transition">About</a>
+                    <a href="#" class="hover:text-white transition">Transparency</a>
+                    <a href="#" class="hover:text-white transition">Privacy</a>
+                    <a href="#" class="hover:text-white transition">Contact</a>
+                </div>
+            </div>
+            <div class="text-center text-gray-400 text-sm leading-relaxed">
+                <p>OrganLink — Making organ donation transparent, efficient, and ethically sound.</p>
+                <p class="mt-2">&copy; 2025 OrganLink. All rights reserved. | Every organ counts, every life matters.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- small inline script for smooth interactivity + reactive counter simulation -->
+    <script>
+        // optional: dynamic counter stats for visual flair (reactive update)
+        function animateNumber(element, target, duration = 1200) {
+            if(!element) return;
+            let start = 0;
+            const increment = target / (duration / 16);
+            let current = 0;
+            const timer = setInterval(() => {
+                current += increment;
+                if(current >= target) {
+                    element.innerText = target.toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    element.innerText = Math.floor(current).toLocaleString();
+                }
+            }, 16);
+        }
+        // trigger subtle animation on stat numbers only if they have default / placeholder numbers
+        const waitingEl = document.querySelector('.stat-card:first-child .text-4xl');
+        const donorEl = document.querySelectorAll('.stat-card')[1]?.querySelector('.text-4xl');
+        const matchesEl = document.querySelectorAll('.stat-card')[2]?.querySelector('.text-4xl');
+        const organsEl = document.querySelectorAll('.stat-card')[3]?.querySelector('.text-4xl');
+        if(waitingEl && waitingEl.innerText.includes('1,284')) animateNumber(waitingEl, 1284);
+        if(donorEl && donorEl.innerText.includes('9,526')) animateNumber(donorEl, 9526);
+        if(matchesEl && matchesEl.innerText.includes('347')) animateNumber(matchesEl, 347);
+        if(organsEl && organsEl.innerText.includes('189')) animateNumber(organsEl, 189);
+        
+        // add scroll-reveal like effect
+        const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -20px 0px" };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.stat-card, .group, .feature-card').forEach(el => {
+            if(el.classList.contains('stat-card')) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(15px)';
+                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(el);
+            }
+        });
+    </script>
+</body>
+</html>
