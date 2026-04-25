@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from config import get_db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -6,6 +7,13 @@ import json
 
 app = Flask(__name__)
 app.secret_key = 'organlink_secret_2024'
+
+
+if __name__ == '__main__':
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
+
 
 # ==================== HELPER FUNCTIONS ====================
 def add_log(user_id, target_table, action):
@@ -745,5 +753,5 @@ def donor_dashboard():
     
     return render_template('donor/dashboard.html', donor=donor, organs=organs, matches=matches)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
